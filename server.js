@@ -100,6 +100,12 @@ app.post('/record-draw-result', async (req, res) => {
   }
 });
 
+// Wake-up ping route to prevent server from sleeping
+app.get('/keep-alive', (req, res) => {
+  console.log('Received a keep-alive ping');
+  res.send('Server is alive');
+});
+
 // Set up the port for the server to listen on
 const PORT = process.env.PORT || 5015;  // Ensure using dynamic port assignment
 app.listen(PORT, () => {
