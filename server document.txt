@@ -2,6 +2,7 @@ import express from 'express';
 import admin from 'firebase-admin';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { DateTime } from 'luxon'; // Import Luxon for timestamp handling
 
 // Load environment variables
 dotenv.config();
@@ -87,10 +88,14 @@ app.post('/record-draw-result', async (req, res) => {
     });
 
     const drawResultRef = db.collection('drawResults').doc(orderNumber);
+
+    // Get the current timestamp in Toronto time
+    const torontoTimestamp = DateTime.now().setZone('America/Toronto').toISO();
+
     await drawResultRef.set({
       orderNumber,
       drawResult,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      timestamp: torontoTimestamp, // Store timestamp in Toronto time
     });
 
     res.json({ success: true, message: 'Draw result recorded successfully.' });
@@ -107,7 +112,7 @@ app.get('/keep-alive', (req, res) => {
 });
 
 // Set up the port for the server to listen on
-const PORT = process.env.PORT || 5015;  // Ensure using dynamic port assignment
+const PORT = process.env.PORT || 5015; // Ensure using dynamic port assignment
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
