@@ -28,7 +28,10 @@ const app = express();
 
 // Middleware to handle JSON requests
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://aibasetechnology.com',
+  credentials: true
+}));
 
 // Step 1: Check if order number exists in Firestore and its status
 app.post('/check-order-number', async (req, res) => {
